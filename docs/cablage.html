@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Câblage Uno → FM-1 (clé UBOOT)</title>
+<style>
+  :root{--bg:#15191e;--panel:#1d232a;--ink:#e6edf3;--mute:#8b949e;--green:#3fb950;--white:#f2f2f2;--gnd:#a8b0b8;--red:#f85149;--blue:#4ea1ff;--orange:#f0883e;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+  main{max-width:1100px;margin:0 auto;padding:24px 16px 48px}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--mute);margin:0 0 18px}
+  .card{background:var(--panel);border:1px solid #2d343c;border-radius:12px;padding:12px}
+  svg{width:100%;height:auto;display:block}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:16px}
+  h2{font-size:16px;margin:0 0 8px}
+  ul{margin:0;padding-left:18px}
+  li{margin:4px 0}
+  .warn{border-color:#6e2b28;background:#2a1b1b}
+  .ok{border-color:#235a2e;background:#18241b}
+  code{background:#0d1117;padding:1px 6px;border-radius:5px;font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  td,th{padding:6px 8px;border-bottom:1px solid #2d343c;text-align:left;vertical-align:top}
+  .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Câblage Arduino Uno → câble USB-C → FM-1</h1>
+  <p class="sub">Sketch <code>fm1_uboot_key_nano.ino</code> (lecture sur A0). FM-1 éteint pendant le branchement.</p>
+
+  <div class="card">
+  <svg viewBox="0 0 1000 640" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,Segoe UI,sans-serif">
+    <defs>
+      <!-- résistance générique -->
+      <g id="rbody">
+        <rect x="-38" y="-11" width="76" height="22" rx="9" fill="#d9c7a3" stroke="#6b5a3c" stroke-width="1.5"/>
+      </g>
+    </defs>
+
+    <!-- ===== UNO ===== -->
+    <rect x="30" y="70" width="170" height="500" rx="12" fill="#0f5c8c" stroke="#5fb2e8" stroke-width="2"/>
+    <text x="115" y="100" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">Arduino Uno</text>
+    <text x="115" y="120" text-anchor="middle" font-size="12" fill="#cfe8f7">(USB → PC)</text>
+
+    <!-- pins -->
+    <g font-size="15" font-weight="700" fill="#fff">
+      <circle cx="200" cy="160" r="7" fill="#ffd33d"/><text x="185" y="165" text-anchor="end">D2</text>
+      <circle cx="200" cy="240" r="7" fill="#ffd33d"/><text x="185" y="245" text-anchor="end">D4</text>
+      <circle cx="200" cy="310" r="7" fill="#ffd33d"/><text x="185" y="315" text-anchor="end">A0</text>
+      <circle cx="200" cy="420" r="7" fill="#ffd33d"/><text x="185" y="425" text-anchor="end">D3</text>
+      <circle cx="200" cy="530" r="7" fill="#ffd33d"/><text x="185" y="535" text-anchor="end">GND</text>
+    </g>
+    <text x="115" y="370" text-anchor="middle" font-size="12" fill="#cfe8f7">D7 : plus utilisé</text>
+    <text x="115" y="386" text-anchor="middle" font-size="12" fill="#cfe8f7">3.3V / 5V / VIN : rien</text>
+
+    <!-- ===== Net D+ (vert) ===== -->
+    <!-- D2 -> 2.2k -> noeud -->
+    <path d="M207 160 H560 V310" stroke="var(--green)" stroke-width="4" fill="none"/>
+    <use href="#rbody" x="330" y="160"/>
+    <g transform="translate(330,160)">
+      <rect x="-26" y="-11" width="7" height="22" fill="#d73a2f"/><rect x="-12" y="-11" width="7" height="22" fill="#d73a2f"/>
+      <rect x="2" y="-11" width="7" height="22" fill="#d73a2f"/><rect x="20" y="-11" width="6" height="22" fill="#c9a227"/>
+    </g>
+    <text x="330" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ink)">2,2 kΩ</text>
+    <text x="330" y="194" text-anchor="middle" font-size="11" fill="var(--mute)">rouge-rouge-rouge</text>
+
+    <!-- D4 -> 470 -> noeud -->
+    <path d="M207 240 H560" stroke="var(--green)" stroke-width="4" fill="none"/>
+    <use href="#rbody" x="330" y="240"/>
+    <g transform="translate(330,240)">
+      <rect x="-26" y="-11" width="7" height="22" fill="#f1d302"/><rect x="-12" y="-11" width="7" height="22" fill="#8a3ffc"/>
+      <rect x="2" y="-11" width="7" height="22" fill="#7a4a1e"/><rect x="20" y="-11" width="6" height="22" fill="#c9a227"/>
+    </g>
+    <text x="330" y="220" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ink)">470 Ω</text>
+    <text x="330" y="274" text-anchor="middle" font-size="11" fill="var(--mute)">jaune-violet-brun</text>
+
+    <!-- A0 direct -->
+    <path d="M207 310 H560" stroke="var(--green)" stroke-width="4" fill="none" stroke-dasharray="0"/>
+    <text x="380" y="300" text-anchor="middle" font-size="12" fill="var(--green)">fil direct, SANS résistance</text>
+
+    <!-- noeud D+ -->
+    <circle cx="560" cy="160" r="6" fill="var(--green)"/>
+    <circle cx="560" cy="240" r="7" fill="var(--green)"/>
+    <circle cx="560" cy="310" r="6" fill="var(--green)"/>
+    <text x="575" y="232" font-size="13" font-weight="700" fill="var(--green)">NŒUD D+</text>
+
+    <!-- noeud -> cable vert -->
+    <path d="M560 240 H850" stroke="var(--green)" stroke-width="5" fill="none"/>
+    <!-- pulldown D+ -->
+    <path d="M660 240 V560" stroke="var(--green)" stroke-width="3" fill="none"/>
+    <circle cx="660" cy="240" r="6" fill="var(--green)"/>
+    <g transform="translate(660,330) rotate(90)">
+      <use href="#rbody"/>
+      <rect x="-26" y="-11" width="7" height="22" fill="#f0883e"/><rect x="-12" y="-11" width="7" height="22" fill="#f0883e"/>
+      <rect x="2" y="-11" width="7" height="22" fill="#d73a2f"/><rect x="20" y="-11" width="6" height="22" fill="#c9a227"/>
+    </g>
+    <text x="680" y="326" font-size="14" font-weight="700" fill="var(--ink)">3,3 kΩ</text>
+    <text x="680" y="342" font-size="11" fill="var(--mute)">orange-orange-rouge</text>
+
+    <!-- ===== Net D- (blanc) ===== -->
+    <path d="M207 420 H648 A12 12 0 0 1 672 420 H850" stroke="var(--white)" stroke-width="4" fill="none"/>
+    <text x="652" y="446" text-anchor="end" font-size="10" fill="var(--mute)">croisement, pas relié</text>
+    <use href="#rbody" x="330" y="420"/>
+    <g transform="translate(330,420)">
+      <rect x="-26" y="-11" width="7" height="22" fill="#d73a2f"/><rect x="-12" y="-11" width="7" height="22" fill="#d73a2f"/>
+      <rect x="2" y="-11" width="7" height="22" fill="#d73a2f"/><rect x="20" y="-11" width="6" height="22" fill="#c9a227"/>
+    </g>
+    <text x="330" y="400" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ink)">2,2 kΩ</text>
+    <text x="330" y="454" text-anchor="middle" font-size="11" fill="var(--mute)">rouge-rouge-rouge</text>
+    <circle cx="740" cy="420" r="7" fill="var(--white)"/>
+    <text x="560" y="410" font-size="13" font-weight="700" fill="var(--white)">NŒUD D−</text>
+    <!-- pulldown D- -->
+    <path d="M740 420 V560" stroke="var(--white)" stroke-width="3" fill="none"/>
+    <g transform="translate(740,490) rotate(90)">
+      <use href="#rbody"/>
+      <rect x="-26" y="-11" width="7" height="22" fill="#f0883e"/><rect x="-12" y="-11" width="7" height="22" fill="#f0883e"/>
+      <rect x="2" y="-11" width="7" height="22" fill="#d73a2f"/><rect x="20" y="-11" width="6" height="22" fill="#c9a227"/>
+    </g>
+    <text x="760" y="486" font-size="14" font-weight="700" fill="var(--ink)">3,3 kΩ</text>
+    <text x="760" y="502" font-size="11" fill="var(--mute)">orange-orange</text><text x="760" y="516" font-size="11" fill="var(--mute)">-rouge</text>
+
+    <!-- ===== GND ===== -->
+    <path d="M207 530 H232 V560 H850" stroke="var(--gnd)" stroke-width="5" fill="none"/>
+    <circle cx="660" cy="560" r="6" fill="var(--gnd)"/>
+    <circle cx="740" cy="560" r="6" fill="var(--gnd)"/>
+    <text x="420" y="585" text-anchor="middle" font-size="13" font-weight="700" fill="var(--gnd)">GND commun (rail de masse)</text>
+
+    <!-- ===== Câble USB-C ===== -->
+    <rect x="850" y="120" width="120" height="480" rx="14" fill="#2b3038" stroke="#59616b" stroke-width="2"/>
+    <text x="910" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ink)">Câble USB-C coupé</text>
+    <text x="910" y="625" text-anchor="middle" font-size="13" fill="var(--mute)">→ prise vers le FM-1</text>
+
+    <g font-size="13" font-weight="700">
+      <circle cx="850" cy="240" r="8" fill="var(--green)"/><text x="868" y="236" fill="var(--green)">VERT</text><text x="868" y="252" fill="var(--mute)" font-weight="400">D+</text>
+      <circle cx="850" cy="420" r="8" fill="var(--white)"/><text x="868" y="416" fill="var(--white)">BLANC</text><text x="868" y="432" fill="var(--mute)" font-weight="400">D−</text>
+      <circle cx="850" cy="560" r="8" fill="var(--gnd)"/><text x="868" y="556" fill="var(--gnd)">DRAIN nu</text><text x="868" y="572" fill="var(--mute)" font-weight="400">GND (+ blindage)</text>
+    </g>
+
+    <!-- fils isolés -->
+    <g>
+      <path d="M966 168 H990" stroke="var(--red)" stroke-width="5"/>
+      <rect x="858" y="148" width="108" height="40" rx="6" fill="#3a1d1d" stroke="var(--red)"/>
+      <text x="912" y="164" text-anchor="middle" font-size="12" font-weight="700" fill="var(--red)">ROUGE 5 V</text>
+      <text x="912" y="180" text-anchor="middle" font-size="9.5" fill="#ffb3ad">isolé · NE PAS brancher</text>
+      <path d="M966 318 H990" stroke="var(--blue)" stroke-width="3"/>
+      <rect x="858" y="298" width="108" height="40" rx="6" fill="#16263a" stroke="var(--blue)"/>
+      <text x="912" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="var(--blue)">BLEU (CC)</text>
+      <text x="912" y="330" text-anchor="middle" font-size="9.5" fill="#b7d6ff">isolé · NE PAS brancher</text>
+    </g>
+  </svg>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Liste de vérification</h2>
+      <table>
+        <tr><th>De</th><th>Par</th><th>Vers</th></tr>
+        <tr><td>D2</td><td>2,2 kΩ</td><td><span class="sw" style="background:var(--green)"></span>nœud D+ (vert)</td></tr>
+        <tr><td>D4</td><td>470 Ω</td><td><span class="sw" style="background:var(--green)"></span>nœud D+ (vert)</td></tr>
+        <tr><td>A0</td><td>fil direct</td><td><span class="sw" style="background:var(--green)"></span>nœud D+ (vert)</td></tr>
+        <tr><td>nœud D+</td><td>3,3 kΩ</td><td><span class="sw" style="background:var(--gnd)"></span>GND</td></tr>
+        <tr><td>D3</td><td>2,2 kΩ</td><td><span class="sw" style="background:var(--white)"></span>nœud D− (blanc)</td></tr>
+        <tr><td>nœud D−</td><td>3,3 kΩ</td><td><span class="sw" style="background:var(--gnd)"></span>GND</td></tr>
+        <tr><td>GND Uno</td><td>fil direct</td><td><span class="sw" style="background:var(--gnd)"></span>drain nu du câble</td></tr>
+        <tr><td colspan="3" style="color:var(--red)">Rouge et bleu : isolés séparément, ne touchent rien.</td></tr>
+      </table>
+    </div>
+
+    <div class="card ok">
+      <h2>Mesures attendues (multimètre, Uno branché au PC)</h2>
+      <ul>
+        <li>Au repos : vert ≈ <b>0 V</b>, blanc ≈ <b>0 V</b> par rapport au GND.</li>
+        <li><code>t</code> → « D+ : 0.00 V → BAS ».</li>
+        <li>A0 touché brièvement au 3.3V → <code>t</code> ≈ « 3.3 V → HAUT ».</li>
+        <li>Pendant l’envoi de la clé, le niveau haut sur le vert et le blanc ne doit jamais dépasser <b>≈ 3,0 V</b>.</li>
+        <li>Continuité : drain ↔ boîtier métallique de la prise USB-C = bip.</li>
+      </ul>
+    </div>
+
+    <div class="card warn">
+      <h2>À ne pas faire</h2>
+      <ul>
+        <li>Brancher le fil rouge (5 V) n’importe où.</li>
+        <li>Relier vert ou blanc à une broche de l’Uno sans passer par la 2,2 kΩ (sauf A0, qui est seulement en lecture).</li>
+        <li>Oublier les 3,3 kΩ vers GND : ce sont elles qui ramènent le signal à ≈ 3,0 V.</li>
+        <li>Éteindre le FM-1 entre la clé et le passage au PC.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+</body>
+</html>
