@@ -93,4 +93,4 @@ Testé le 14 novembre 2026 : sous Felucca, ce fichier installé avec **M-UPGRADE
 
 ## Licence
 
-À décider avant publication.
+[Unlicense](LICENSE) (domaine public), comme le projet d'origine `merthsoft/flipper-fm1-recovery`. Vous pouvez copier, modifier et réutiliser ce code librement, sans garantie.
